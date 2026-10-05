@@ -1,0 +1,7 @@
+# Project history
+
+In summer 2025, the working direction shifted toward comparing repeat SDSS quasar spectra. Surviving project notes describe using DR16Q, a redshift cut below 0.8, repeat-observation metadata, the oldest and latest spectra, difference plots, an exploratory Hβ-region area score, and visual inspection. The notes report catalog counts of 750,414, 76,565, and 8,141 at successive cuts, and a trial of roughly 200 pairs yielding 33 above a chosen value. The original code, intermediate arrays, images, and object list are unavailable here; these counts and choices are **reported notes**, not independently reproduced results.
+
+The presentation outlines line-width, equivalent-width, and AGN-type ideas. It is useful context for what was contemplated, but does not establish that a general line detector or classification pipeline was completed. Papers about double-peaked [O III] and candidate binary AGNs or recoiling black holes were background reading; they provide no evidence of implemented searches or confirmed binaries in this project. A separate earlier spectral-stacking/kick report is not evidence for results here.
+
+The package, tests, synthetic example, and report in this repository were written later to make the repeat-spectrum idea reproducible and easier to evaluate. No original source file has been reconstructed verbatim, and no real-object candidate list has been recovered. The code can prioritize spectra for human review; observational performance and classifications remain to be established.

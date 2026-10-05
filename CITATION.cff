@@ -1,0 +1,8 @@
+cff-version: 1.2.0
+message: "If you use this code, cite this repository and the underlying SDSS data and method papers."
+title: "Changing-Look AGN Detection: repeat optical spectrum review tools"
+authors:
+  - family-names: Rehani
+    given-names: Kautik
+repository-code: "https://github.com/K-Rehani/Changing-Look-AGN-Detection"
+license: MIT
