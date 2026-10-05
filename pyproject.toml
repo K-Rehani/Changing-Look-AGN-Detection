@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=75,<82", "wheel>=0.44,<1"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "clagn-detection"
+version = "0.1.0"
+description = "Review repeat optical AGN spectra for possible broad-line transitions"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [{name = "Kautik Rehani"}]
+dependencies = [
+  "numpy>=1.26,<3",
+  "scipy>=1.11,<2",
+  "astropy>=6,<9",
+  "matplotlib>=3.8,<4",
+]
+
+[project.optional-dependencies]
+sdss = ["astroquery>=0.4.10,<1"]
+test = ["pytest>=8,<10"]
+
+[project.scripts]
+clagn = "clagn_detection.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
