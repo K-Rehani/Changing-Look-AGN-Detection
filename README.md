@@ -53,7 +53,7 @@ Selection takes the oldest and latest valid primary/duplicate plate–MJD–fibe
 | Survey-wide run, manual candidate review, calibrated selection thresholds, completeness/contamination | Not established |
 | Changing-look confirmations, mechanisms, universal line finding | Not claimed |
 
-The summer 2025 notes describe an exploratory absolute flux-difference area and a value of 1000 in the Hβ region. Its units and performance were not validated, so this code does not treat it as a classifier. Line changes may reflect calibration, aperture, sky subtraction, noise, continuum and host changes, or true source variability. Changing obscuration and changing accretion state require additional evidence; broad-line fit changes alone do not decide between them. See [methods](docs/METHODS.md), [history](docs/HISTORY.md), [validation plan](docs/VALIDATION.md), and the [LaTeX project report](report/main.tex) ([PDF](report/main.pdf)).
+The summer 2025 notes describe an exploratory area under a two-epoch flux difference and a trial value of 1000 near Hβ. Its units and performance were not validated, so this code does not treat it as a classifier. Line changes may reflect calibration, aperture, sky subtraction, noise, continuum and host changes, or true source variability. Changing obscuration and changing accretion state require additional evidence; broad-line fit changes alone do not decide between them. See [methods](docs/METHODS.md), [history](docs/HISTORY.md), and the [validation plan](docs/VALIDATION.md). The expanded report is public as both [TeX source](report/main.tex) and a [PDF with figures and references](report/main.pdf).
 
 ## References and reuse
 
