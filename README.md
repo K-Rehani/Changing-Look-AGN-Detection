@@ -1,6 +1,8 @@
 # Changing-Look AGN Detection
 
-This project explores how repeat optical spectra can be used to find **changing-look AGN candidates**. It started with exploratory work in summer 2025 using repeat SDSS quasar observations. The code here is a new implementation built afterward: it reads SDSS spectra, measures selected emission lines in both epochs, fits simple broad Balmer components, and produces plots and review priorities. A review flag is a reason to inspect a pair, not a confirmed changing-look classification.
+[Project report 2025 (PDF)](NCRA%20project%20report%202025.pdf)
+
+This project explores how repeat optical spectra can be used to find **changing-look AGN candidates**. Most of my work on the project was done in summer 2025, using repeat SDSS quasar observations. I have been making small edits and updates since then. The code reads SDSS spectra, measures selected emission lines in both epochs, fits simple broad Balmer components, and produces plots and review priorities. A review flag is a reason to inspect a pair, not a confirmed changing-look classification.
 
 ## Try it without downloading survey data
 
@@ -53,7 +55,7 @@ Selection takes the oldest and latest valid primary/duplicate plate–MJD–fibe
 | Survey-wide run, manual candidate review, calibrated selection thresholds, completeness/contamination | Not established |
 | Changing-look confirmations, mechanisms, universal line finding | Not claimed |
 
-The summer 2025 notes describe an exploratory area under a two-epoch flux difference and a trial value of 1000 near Hβ. Its units and performance were not validated, so this code does not treat it as a classifier. Line changes may reflect calibration, aperture, sky subtraction, noise, continuum and host changes, or true source variability. Changing obscuration and changing accretion state require additional evidence; broad-line fit changes alone do not decide between them. See [methods](docs/METHODS.md), [history](docs/HISTORY.md), and the [validation plan](docs/VALIDATION.md). The [project report](NCRA%20project%20report%202025.pdf) is available as a PDF with figures and references.
+The summer 2025 notes describe an exploratory area under a two-epoch flux difference and a trial value of 1000 near Hβ. Its units and performance were not validated, so this code does not treat it as a classifier. Line changes may reflect calibration, aperture, sky subtraction, noise, continuum and host changes, or true source variability. Changing obscuration and changing accretion state require additional evidence; broad-line fit changes alone do not decide between them. See [methods](docs/METHODS.md), [history](docs/HISTORY.md), and the [validation plan](docs/VALIDATION.md).
 
 ## References and reuse
 
