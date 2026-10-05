@@ -1,0 +1,57 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+\title{Searching for Changing-Look AGN Candidates in Repeat Optical Spectra\\
+\large Project history and a reproducible follow-up implementation}
+\author{Kautik Rehani}
+\date{October 2026}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Changing-look active galactic nuclei (AGNs) can undergo large changes in their optical continuum and broad emission lines. An exploratory project begun in summer 2025 considered repeat Sloan Digital Sky Survey (SDSS) quasar spectra for candidate selection. Its surviving notes describe preliminary catalog cuts, difference spectra, and a trial area score, but the original software and outputs are unavailable for independent verification. This report separates that historical direction from a subsequent, newly written Python implementation. The new package selects repeat observations, reads individual spectra with quality masks, measures locally continuum-subtracted line fluxes, fits simplified broad Balmer components, and generates review plots. Eight automated tests and a synthetic disappearing-broad-line example check key numerical behavior. No survey-wide search or real-object changing-look confirmation is reported. The output is a reproducible framework for candidate triage and future validation, not an established classifier.
+\end{abstract}
+
+\section{Scientific setting and project chronology}
+An optical changing-look event is commonly associated with a marked transition in the broad emission-line spectrum and continuum, but physical interpretation requires care. Changes in accretion state and line-of-sight obscuration can produce different multiwavelength signatures \cite{ricci2023}. Repeat spectroscopy offers a way to identify objects meriting closer study. The DR16 quasar catalog (DR16Q) includes repeat-observation identifiers alongside redshifts \cite{lyke2020}.
+
+The surviving summer 2025 notes record a shift toward selecting DR16Q objects with $z<0.8$ and at least one repeat spectrum, comparing the oldest and latest observations, inspecting difference spectra, and trying an area threshold in the rest-frame 4600--5000~\AA{} region. The notes give successive counts of 750,414 catalog entries, 76,565 after a redshift cut, and 8,141 with repeat spectra; they also describe a small trial of roughly 200 pairs and 33 above an exploratory value of 1000. The catalog, original code, object list, intermediate arrays, and resulting plots were not available for this reconstruction. These numbers are therefore records of what the notes say, not reproduced findings. The associated presentation discussed line widths, equivalent widths, and spectral types as possible directions; it does not establish that a universal line detector or a finished classifier existed.
+
+The software described below was implemented after summer 2025. It is explicitly a follow-up to the repeat-spectrum idea. Other readings on double-peaked [O\,III] candidate binary AGNs and recoiling black holes motivated broader context but are not evidence of a completed search or confirmed binaries in this work.
+
+\section{Inputs and selection}
+The implementation expects the SDSS quasar-only catalog \texttt{DR16Q\_v4.fits} \cite{lyke2020,sdssdatamodel}. Individual spectra use plate, MJD, and fiber identifiers in their filenames. For a row with finite $0<z<0.8$ and \texttt{NSPEC}$\geq1$, it combines the primary plate--MJD--fiber triple with valid duplicate triples, removes exact duplicates, and chooses the oldest and latest by MJD. Pairs on the same MJD are omitted. A CSV manifest retains the identifiers and rest-frame separation $\Delta t_{\rm rest}=\Delta\mathrm{MJD}/(1+z)$. These cuts do not imply complete line coverage or adequate signal-to-noise, and the quasar-only catalog can miss objects classified differently at another epoch.
+
+Spectra are obtained separately through an optional \texttt{astroquery} downloader or supplied as local files. The retrieval step logs release, timestamp, file hash, and failures. The reader uses HDU 1 \texttt{loglam}, \texttt{flux}, \texttt{ivar}, and \texttt{and\_mask}; a pixel is valid only if its flux and inverse variance are finite, inverse variance is positive, and the AND mask is zero. Additional OR-mask bits may be rejected explicitly. The code does not make a complete survey-specific quality decision for the user.
+
+\section{Measurements}
+The SDSS wavelengths are in the observed frame, $\lambda_{\rm obs}=10^{\texttt{loglam}}\,\text{\AA}$. Rest wavelength is $\lambda=\lambda_{\rm obs}/(1+z)$. Each spectrum is measured on its \emph{own} grid. The standard SDSS flux-density scale is $10^{-17}\,\mathrm{erg\,s^{-1}\,cm^{-2}\,\text{\AA}^{-1}}$. Rest-frame line and continuum windows for H$\beta$, H$\alpha$, and Mg\,II follow the broad-line windows in Guo et al. \cite{guo2024}; the code lists the exact bounds. A linear continuum $a+b(\lambda-\lambda_0)$ is fitted by inverse-variance weighted least squares in two sidebands. The integrated line flux is
+\begin{equation}
+ F_{\rm line}\simeq\sum_{i\in W}w_{i,\rm obs}\,[f_i-a-b(\lambda_i-\lambda_0)],\qquad
+ w_{i,\rm obs}=(1+z)w_{i,\rm rest},
+\end{equation}
+where $w_i$ are trapezoidal integration weights. The result is in $10^{-17}\,\mathrm{erg\,s^{-1}\,cm^{-2}}$. Its formal variance combines $\sum_i w_{i,\rm obs}^2/\mathrm{ivar}_i$ and the propagated covariance of the fitted continuum. The rest equivalent width is $F_{\rm line}/[(1+z)a]$ when $a>0$. The sideband covariance is inflated if reduced $\chi^2$ exceeds one. A missing or significantly gapped window is rejected, rather than interpolated into a measurement. H$\alpha$'s integration window includes narrow H$\alpha$ and [N\,II], and the Mg\,II region can contain Fe\,II.
+
+For H$\beta$ and H$\alpha$, exploratory Gaussian fits compare a linear continuum plus a narrow component with the same model plus a broad component. H$\alpha$ also has tied [N\,II] doublet terms. Formal inverse-variance fits produce a BIC difference, broad flux, uncertainty, and FWHM. A component is provisionally detected when $\Delta\mathrm{BIC}>10$, formal broad-flux S/N $\geq5$, FWHM $\geq1000\,\mathrm{km\,s^{-1}}$, and the fit does not approach the imposed width ceiling. A pair is flagged for \emph{review} if this status changes and the fitted flux change exceeds three formal standard deviations. These numerical choices are uncalibrated heuristics. An [O\,III] $\lambda5007$ measurement provides a warning about possible relative-calibration changes, not an automatic correction.
+
+The output score is the largest absolute formal change significance among available broad-line-window integrals and qualifying fitted-component changes. It is useful for sorting pairs, but no probability, completeness, purity, or universal threshold follows from it. The only pixel-to-pixel subtraction is in a diagnostic plot: both masked spectra are interpolated across their common coverage for display, without crossing invalid-pixel gaps. Those differences are not used in the line statistics.
+
+\section{Checks and illustrative result}
+Tests exercise redshift and integrated-flux units against an analytic Gaussian, rest equivalent width at $z=0$ and $0.6$, a continuum-only offset, different epoch grids, masked and zero-inverse-variance pixels, missing red coverage, catalog chronology, and a FITS round-trip. All eight tests passed in the local environment used for this report. The deterministic synthetic example injects broad H$\beta$ and H$\alpha$ in the earlier spectrum and removes them in the later one while retaining narrow lines and Gaussian noise. It triggers the broad-transition review flag; integrated-flux differences are approximately $-27.1$ and $-24.1$ formal sigma, respectively. These values describe the \emph{constructed example only}. They do not measure survey performance or represent an observed changing-look AGN. The example can be regenerated with \texttt{clagn demo} and inspected as a PNG and JSON record.
+
+\section{Limitations and next steps}
+The historical area threshold was not adopted. An integral of absolute flux-density differences over a wavelength interval has integrated-flux units and varies with continuum level, noise, normalization, sampling, and window width; a raw value of 1000 has no established classification meaning here. The new Gaussian model also omits host-galaxy templates, Fe\,II, asymmetric profiles, instrumental resolution, correlated noise, and detailed relative calibration. BIC and covariance may be overconfident. A candidate requires visually convincing broad-line evolution with adequate coverage and quality checks. Further epochs, photometry, and multiwavelength evidence help separate a genuine event from artifacts and assess obscuration versus changing accretion state \cite{ricci2023,guo2024}.
+
+A future observational evaluation should run the code on a recorded catalog version and release, retain download hashes, inspect a stratified sample of scores, compare independently vetted changing-look objects and stable controls, and measure recovery and false positives as functions of signal-to-noise, redshift, wavelength coverage, and time baseline. Thresholds should be tuned on data separate from final evaluation. No such validation, real-object candidate list, or confirmed classification is claimed in this report.
+
+\section*{Reproducibility}
+The source, environment bounds, usage instructions, methods, and tests are in \url{https://github.com/K-Rehani/Changing-Look-AGN-Detection}. Raw catalog and spectra should be downloaded from SDSS under its data terms; generated spectra are clearly labeled synthetic. This report cites the original catalog and methodological context without incorporating copyrighted papers into the repository.
+
+\bibliographystyle{plain}
+\bibliography{references}
+\end{document}
