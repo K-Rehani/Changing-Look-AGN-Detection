@@ -2,7 +2,7 @@
 
 [Project report 2025 (PDF)](NCRA%20project%20report%202025.pdf)
 
-This project explores how repeat optical spectra can be used to find **changing-look AGN candidates**. Most of my work on the project was done in summer 2025, using repeat SDSS quasar observations. I have been making small edits and updates since then. The code reads SDSS spectra, measures selected emission lines in both epochs, fits simple broad Balmer components, and produces plots and review priorities. A review flag is a reason to inspect a pair, not a confirmed changing-look classification.
+This project explores how repeat optical spectra can be used to find **changing-look AGN candidates**. I began this project in summer 2025, working on repeat SDSS quasar selection, comparisons between epochs, difference plots, and exploratory visual screening. I uploaded it to GitHub in 2026 and reconstructed the accompanying code to make the workflow reproducible. The code reads SDSS spectra, measures selected emission lines in both epochs, fits simple broad Balmer components, and produces plots and review priorities. A review flag is a reason to inspect a pair, not a confirmed changing-look classification.
 
 ## Try it without downloading survey data
 
@@ -51,7 +51,7 @@ Selection takes the oldest and latest valid primary/duplicate plate–MJD–fibe
 
 | Part | Status |
 | --- | --- |
-| Repeat-observation selection, local spectral measurements, plots, and synthetic checks | Implemented now |
+| Repeat-observation selection, local spectral measurements, plots, and synthetic checks | Implemented |
 | Survey-wide run, manual candidate review, calibrated selection thresholds, completeness/contamination | Not established |
 | Changing-look confirmations, mechanisms, universal line finding | Not claimed |
 
